@@ -1,0 +1,53 @@
+.splash-screen-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: #8C52FE; /* Matches the exact purple shade from your logo image */
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.splash-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.splash-logo-wrapper {
+  width: 160px;
+  height: 160px;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.splash-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 0;
+}
+
+.splash-brand-title {
+  font-family: Georgia, serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  margin-bottom: 1.5rem;
+}
+
+.splash-loader-bar {
+  height: 3px;
+  background-color: #FFFFFF;
+  border-radius: 2px;
+}

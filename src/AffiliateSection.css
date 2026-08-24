@@ -1,0 +1,144 @@
+.affiliate-section {
+  width: 100%;
+  padding: 6rem 2rem;
+  background-color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.affiliate-container {
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Big Heading Above the Card */
+.affiliate-section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.affiliate-section-main-heading {
+  font-family: Georgia, serif;
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 500;
+  color: #1A1A1A;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Luxury Card with rounded corners and partnership background image */
+.affiliate-luxury-card {
+  width: 100%;
+  min-height: 480px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.65)), url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1600&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.affiliate-card-overlay {
+  width: 100%;
+  padding: 5rem 4rem;
+  display: flex;
+  align-items: center;
+}
+
+.affiliate-card-content {
+  max-width: 700px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Clean Typography Highlight Tag */
+.affiliate-highlight-tag {
+  display: inline-block;
+  background-color: rgba(155, 77, 224, 0.25);
+  border: 1px solid rgba(155, 77, 224, 0.5);
+  padding: 0.4rem 1.2rem;
+  margin-bottom: 1.2rem;
+  border-radius: 4px;
+}
+
+.affiliate-highlight-tag span {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #EDE9FE;
+}
+
+.affiliate-title {
+  font-family: Georgia, serif;
+  font-size: clamp(2.5rem, 4.5vw, 3.8rem);
+  font-weight: 500;
+  color: #FFFFFF;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  margin-bottom: 1.2rem;
+  text-transform: uppercase;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.affiliate-title span {
+  font-style: italic;
+  font-weight: 400;
+  color: #c084fc;
+}
+
+.affiliate-description {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: #D1D5DB;
+  margin-bottom: 2.2rem;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+}
+
+/* Apply Now Button: White background, dark text, transitions to brand purple on hover */
+.btn-apply-now {
+  background-color: #FFFFFF;
+  color: #1F2937;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+  padding: 1rem 3.2rem;
+  letter-spacing: 0.18em;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 0px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.btn-apply-now:hover {
+  background-color: #9b4de0;
+  color: #FFFFFF;
+  transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 968px) {
+  .affiliate-card-overlay {
+    padding: 3rem 1.5rem;
+    text-align: center;
+    justify-content: center;
+  }
+  .affiliate-card-content {
+    align-items: center;
+  }
+  .affiliate-description {
+    text-align: center;
+  }
+}
