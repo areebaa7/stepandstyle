@@ -5,8 +5,8 @@ import './CustomerReviews.css';
 
 // Import shoe images from women, men, and kids folders
 import womenShoeImg from './assets/Women/women-mustardshoes.jpeg';
-import menShoeImg from './assets/men/formal/men-formal2.jpeg';
-import kidsShoeImg from './assets/kids/kids-1.jpeg';
+import menShoeImg from './assets/Men/formal/men-formal2.jpeg';
+import kidsShoeImg from './assets/Kids/kids-1.jpeg';
 
 const reviewsData = [
   {
