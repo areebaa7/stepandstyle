@@ -3,9 +3,9 @@ import { motion } from 'framer-motion';
 import './ShopPage.css';
 
 // Dynamically import images from each subfolder inside assets/men/
-const casualImages = import.meta.glob('./assets/men/casual/*.{png,jpg,jpeg,webp}', { eager: true });
-const formalImages = import.meta.glob('./assets/men/formal/*.{png,jpg,jpeg,webp}', { eager: true });
-const sneakerImages = import.meta.glob('./assets/men/sneaker/*.{png,jpg,jpeg,webp}', { eager: true });
+const casualImages = import.meta.glob('./assets/Men/casual/*.{png,jpg,jpeg,webp}', { eager: true });
+const formalImages = import.meta.glob('./assets/Men/formal/*.{png,jpg,jpeg,webp}', { eager: true });
+const sneakerImages = import.meta.glob('./assets/Men/sneaker/*.{png,jpg,jpeg,webp}', { eager: true });
 
 // Helper to map imported glob objects into catalog products
 const getProductsFromFolder = (globObj, subcategory) => {

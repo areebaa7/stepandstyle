@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import './ShopPage.css';
 
 // Using Vite's import.meta.glob to dynamically load images from the local assets/kids folder
-const kidsImages = import.meta.glob('./assets/kids/*.{png,jpg,jpeg,webp}', { eager: true });
+const kidsImages = import.meta.glob('./assets/Kids/*.{png,jpg,jpeg,webp}', { eager: true });
 
 // Convert local glob imports into structured catalog items
 const kidsCatalog = Object.entries(kidsImages).map(([path, module], index) => ({
