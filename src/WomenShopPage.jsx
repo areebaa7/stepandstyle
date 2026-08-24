@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import './ShopPage.css';
 
 // Using Vite's import.meta.glob to dynamically load images from the local assets/women folder
-const womenImages = import.meta.glob('./assets/women/*.{png,jpg,jpeg,webp}', { eager: true });
+const womenImages = import.meta.glob('./assets/Women/*.{png,jpg,jpeg,webp}', { eager: true });
 
 // Direct asset imports for the specific subcategory circles
 import casualThumb from './assets/shoe-2.jpeg';
