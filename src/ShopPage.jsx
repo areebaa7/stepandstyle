@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import './ShopPage.css';
 
-const womenImages = import.meta.glob('./assets/women/*.{png,jpg,jpeg,webp}', { eager: true });
-const menImages = import.meta.glob('./assets/men/*.{png,jpg,jpeg,webp}', { eager: true });
-const kidsImages = import.meta.glob('./assets/kids/*.{png,jpg,jpeg,webp}', { eager: true });
+const womenImages = import.meta.glob('./assets/Women/*.{png,jpg,jpeg,webp}', { eager: true });
+const menImages = import.meta.glob('./assets/Men/*.{png,jpg,jpeg,webp}', { eager: true });
+const kidsImages = import.meta.glob('./assets/Kids/*.{png,jpg,jpeg,webp}', { eager: true });
 
 const getImagesFromGlob = (globObj, category) => {
   return Object.entries(globObj).map(([path, module], index) => ({

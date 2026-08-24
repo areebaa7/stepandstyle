@@ -3,9 +3,9 @@ import { motion } from 'framer-motion';
 import './BestSellers.css';
 
 // Import local images dynamically or individually from the women assets folder
-import shoe1 from './assets/women/women-mustardshoes.jpeg';
-import shoe2 from './assets/women/women-lilac-shoes.jpeg';
-import shoe3 from './assets/women/women-pink2.jpeg';
+import shoe1 from './assets/Women/women-mustardshoes.jpeg';
+import shoe2 from './assets/Women/women-lilac-shoes.jpeg';
+import shoe3 from './assets/Women/women-pink2.jpeg';
 import shoe4 from './assets/Men/formal/men-formal3.jpeg'; // Reusing or can use any other available asset
 
 const bestSellersData = [

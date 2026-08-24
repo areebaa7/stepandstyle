@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import './CustomerReviews.css';
 
 // Import shoe images from women, men, and kids folders
-import womenShoeImg from './assets/women/women-mustardshoes.jpeg';
+import womenShoeImg from './assets/Women/women-mustardshoes.jpeg';
 import menShoeImg from './assets/men/formal/men-formal2.jpeg';
 import kidsShoeImg from './assets/kids/kids-1.jpeg';
 
