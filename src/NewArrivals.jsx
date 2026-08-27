@@ -5,7 +5,7 @@ import './NewArrivals.css';
 // Import local images from your assets folder
 import item1 from './assets/shoe-2.jpeg';
 import item2 from './assets/shoe-6.jpg';
-import item3 from './assets/shoe-7.jpg';
+import item3 from './assets/shoe-7.jpeg';
 import item4 from './assets/Men/sneaker/sneaker-4.jpeg';
 
 const newArrivalsData = [
@@ -17,13 +17,7 @@ const newArrivalsData = [
 
 export default function NewArrivals({ setCurrentPage }) {
   return (
-    <motion.section 
-      className="new-arrivals-section"
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
-    >
+    <section className="new-arrivals-section">
       {/* Section Title */}
       <motion.h2 
         className="section-title"
@@ -66,6 +60,6 @@ export default function NewArrivals({ setCurrentPage }) {
           DISCOVER ALL
         </motion.button>
       </div>
-    </motion.section>
+    </section>
   );
 }

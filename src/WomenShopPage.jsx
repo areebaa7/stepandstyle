@@ -1,57 +1,111 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import ProductDetail from './ProductDetail';
 import './ShopPage.css';
 
-// Using Vite's import.meta.glob to dynamically load images from the local assets/women folder
-const womenImages = import.meta.glob('./assets/Women/*.{png,jpg,jpeg,webp}', { eager: true });
+// =========================================================================
+// 1. EDIT THESE IMPORTS TO CHANGE YOUR CATEGORY CIRCLE IMAGES EASILY
+// =========================================================================
+import allWomenCircleImg from './assets/shoe-7.jpeg';
+import casualCircleImg from './assets/shoe-2.jpeg';
+import bridalCircleImg from './assets/shoe-5.jpg';
+import formalCircleImg from './assets/women-formal.jpg';
 
-// Direct asset imports for the specific subcategory circles
+// Automatically load all images dynamically from the assets/Women folder
+const womenImages = import.meta.glob('./assets/Women/*.{png,jpg,jpeg,webp}', { eager: true });
+const womenImageList = Object.entries(womenImages).map(([path, mod]) => ({
+  path: path.toLowerCase(),
+  url: mod.default
+}));
+
+// Fallback thumbnails if the folder is empty
+import formalThumb from './assets/women-formal.jpg';
 import casualThumb from './assets/shoe-2.jpeg';
 import bridalThumb from './assets/shoe-5.jpg';
-import formalThumb from './assets/women-formal.jpg';
 
-// Convert local glob imports into structured catalog items
-const womenCatalog = Object.entries(womenImages).map(([path, module], index) => {
-  const lowerPath = path.toLowerCase();
+// =========================================================================
+// 2. DYNAMIC CATALOG MAPPING ALL IMAGES FROM THE WOMEN FOLDER
+// =========================================================================
+const customWomenCatalog = womenImageList.map(({ path, url }, index) => {
   let subcategory = 'formal';
-  if (lowerPath.includes('bridal') || lowerPath.includes('wedding') || lowerPath.includes('shoe-5')) {
-    subcategory = 'bridal';
-  } else if (lowerPath.includes('casual') || lowerPath.includes('sandal') || lowerPath.includes('slide') || lowerPath.includes('shoe-2')) {
+  let title = `Women's Luxury Footwear ${index + 1}`;
+  let description = "Crafted with premium materials for unmatched durability and everyday comfort.";
+  let price = `${(6000 + index * 350).toLocaleString()} PKR`;
+  let originalPrice = `${(7500 + index * 400).toLocaleString()} PKR`;
+
+  // Tailor specific details based on filename keywords or index positions
+  if (path.includes('pink-braided') || path.includes('pink')) {
     subcategory = 'casual';
-  } else if (lowerPath.includes('formal') || lowerPath.includes('women-formal')) {
+    title = 'Pink Braided Glitter Flat Slipper';
+    description = 'Step into effortless summer elegance with these chic pink braided flat slide sandals. Featuring a beautifully hand-woven lattice strap intertwined with shimmering glitter metallic accents, they deliver the perfect balance of sparkle and casual style. The soft, cushioned smooth footbed and slip-on construction ensure all-day comfort, making them your go-to choice for casual outings, beach days, or summer gatherings.';
+  } else if (path.includes('lilac') || path.includes('shimmer') || path.includes('block')) {
     subcategory = 'formal';
+    title = 'Midnight Shimmer Block';
+    description = 'Step into the intersection of edgy modernism and evening glamour with the Midnight Shimmer Block. This design breaks away from traditional silhouettes by pairing a chunky, commanding platform with delicate, light-catching textures. It is designed for the woman who wants to stand tall and make a statement without saying a word. This sandal is the ultimate "day-to-night" transition piece.';
+  } else if (path.includes('golden') || path.includes('bow') || path.includes('wedge')) {
+    subcategory = 'bridal';
+    title = 'Royal Golden Bow Wedge Slippers';
+    price = '1,620 PKR';
+    originalPrice = '1,800 PKR';
+    description = 'Step into elegance with the StepAndStyl Royal Golden Bow Wedge Slippers, designed to add luxury and comfort to your everyday and festive wardrobe. Featuring a sophisticated glitter-finish wedge heel, premium golden metallic detailing, and a statement bow embellishment.';
+  } else if (path.includes('mustard') || path.includes('sandal')) {
+    subcategory = 'casual';
+    title = 'Mustard Woven Lattice Sandal';
+    description = 'Embrace warm-weather sophistication with these rich mustard woven lattice sandals. Featuring intricate braided straps interwoven with glittering metallic threads.';
+  } else if (path.includes('sandal') || path.includes('cork')) {
+    subcategory = 'casual';
+    title = 'Ergonomic Cork Dual-Buckle Slide';
+    description = 'Engineered for supreme orthopedic support, this dual-buckle slide features an authentic molded cork footbed lined with soft suede and adjustable metallic pin buckles.';
+  } else if (path.includes('slipper') || path.includes('sat')) {
+    subcategory = 'casual';
+    title = 'Bloomsbury Pleated Satin Slide';
+    description = 'Plush and feminine, the Bloomsbury slide features ruffled pleated satin fabric patterned with delicate vintage florals.';
+  } else {
+    subcategory = index % 3 === 0 ? 'casual' : index % 3 === 1 ? 'bridal' : 'formal';
+    title = `Women's Elegance Edition ${index + 1}`;
   }
 
+  // Create scrollable multi-image array using other available images in the folder
+  const secondaryImg1 = womenImageList[(index + 1) % womenImageList.length]?.url || casualThumb;
+  const secondaryImg2 = womenImageList[(index + 2) % womenImageList.length]?.url || bridalThumb;
+
   return {
-    id: `w-${index + 1}`,
+    id: `women-item-${index + 1}`,
     subcategory,
-    title: `Women's Luxury Footwear ${index + 1}`,
-    price: `${(6500 + index * 400).toLocaleString()} PKR`,
-    originalPrice: `${(8000 + index * 500).toLocaleString()} PKR`,
+    category: "Women's Collection",
+    title,
+    price,
+    originalPrice,
     discount: '15% OFF',
-    image: module.default,
+    image: url, // Main thumbnail shown in grid
+    images: [url, secondaryImg1, secondaryImg2], // Scrollable gallery images for ProductDetail
     colors: ['#000000', '#F5DEB3', '#D4AF37'],
+    description,
+    details: {
+      embellishment: 'Handset Crystals & Premium Metallic Accents',
+      heelType: subcategory === 'bridal' ? 'Wedge / Stiletto' : 'Flat Comfort Sole',
+      heelHeight: subcategory === 'bridal' ? '2.5 inches' : '≤ 1 inch',
+      liningMaterial: 'Smooth Synthetic PU Leather',
+      shoeSole: 'Flexible Non-Slip PVC / Rubber',
+      upperMaterial: 'Premium Synthetic Leather & Textile'
+    },
+    colorVariants: [
+      { color: '#000000', name: 'Jet Black', description: 'Classic finish tailored for versatile styling.', images: [url, secondaryImg1] },
+      { color: '#F5DEB3', name: 'Nude Beige', description: 'Soft neutral shade for day-to-night elegance.', images: [secondaryImg1, url] }
+    ]
   };
 });
 
-// Fallback items if folder is empty
-const fallbackWomenCatalog = [
-  { id: 'w1', subcategory: 'casual', title: 'Comfort Slide-Tea Pink', price: '4,500 PKR', originalPrice: '5,200 PKR', discount: '13% OFF', image: casualThumb, colors: ['#FFC0CB', '#F5DEB3'] },
-  { id: 'w2', subcategory: 'bridal', title: 'Royal Crystal Bridal Heel-Gold', price: '12,500 PKR', originalPrice: '14,500 PKR', discount: '14% OFF', image: bridalThumb, colors: ['#D4AF37', '#FFFFFF'] },
-  { id: 'w3', subcategory: 'formal', title: 'Velvet Evening Pump-Burgundy', price: '6,800 PKR', originalPrice: '7,900 PKR', discount: '14% OFF', image: formalThumb, colors: ['#800020', '#000000'] },
-];
-
-const finalWomenCatalog = womenCatalog.length > 0 ? womenCatalog : fallbackWomenCatalog;
-
-export default function WomenShopPage() {
+export default function WomenShopPage({ onAddToCart }) {
   const [activeSubcategory, setActiveSubcategory] = useState('all');
   const [currentPage, setCurrentPageNum] = useState(1);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const filtered = activeSubcategory === 'all'
-    ? finalWomenCatalog
-    : finalWomenCatalog.filter(item => item.subcategory === activeSubcategory);
+    ? customWomenCatalog
+    : customWomenCatalog.filter(item => item.subcategory === activeSubcategory);
 
-  const itemsPerPage = 6;
+  const itemsPerPage = 8;
   const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
   const paginatedProducts = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -60,8 +114,15 @@ export default function WomenShopPage() {
     setCurrentPageNum(1);
   };
 
-  // Grab the first image from the women folder for the "All" circle thumbnail
-  const allThumb = Object.values(womenImages)[0]?.default || casualThumb;
+  if (selectedProduct) {
+    return (
+      <ProductDetail 
+        product={selectedProduct} 
+        onBack={() => setSelectedProduct(null)} 
+        onAddToCart={onAddToCart}
+      />
+    );
+  }
 
   return (
     <div className="shop-page-container">
@@ -74,56 +135,29 @@ export default function WomenShopPage() {
         Women's Collection
       </motion.h1>
 
-      {/* Top Circular Category Selector (All, Casual, Bridal, Formal) */}
+      {/* Category Circle Selector using custom top-imported images */}
       <div className="shop-categories-row">
-        <div 
-          className={`category-circle-item ${activeSubcategory === 'all' ? 'active' : ''}`}
-          onClick={() => handleSubcategoryChange('all')}
-        >
-          <div className="circle-image-wrapper">
-            <img src={allThumb} alt="All Women" />
-          </div>
+        <div className={`category-circle-item ${activeSubcategory === 'all' ? 'active' : ''}`} onClick={() => handleSubcategoryChange('all')}>
+          <div className="circle-image-wrapper"><img src={allWomenCircleImg} alt="All Women" /></div>
           <span className="category-label">All Women</span>
         </div>
-
-        <div 
-          className={`category-circle-item ${activeSubcategory === 'casual' ? 'active' : ''}`}
-          onClick={() => handleSubcategoryChange('casual')}
-        >
-          <div className="circle-image-wrapper">
-            <img src={casualThumb} alt="Casual" />
-          </div>
+        <div className={`category-circle-item ${activeSubcategory === 'casual' ? 'active' : ''}`} onClick={() => handleSubcategoryChange('casual')}>
+          <div className="circle-image-wrapper"><img src={casualCircleImg} alt="Casual" /></div>
           <span className="category-label">Casual</span>
         </div>
-
-        <div 
-          className={`category-circle-item ${activeSubcategory === 'bridal' ? 'active' : ''}`}
-          onClick={() => handleSubcategoryChange('bridal')}
-        >
-          <div className="circle-image-wrapper">
-            <img src={bridalThumb} alt="Bridal" />
-          </div>
+        <div className={`category-circle-item ${activeSubcategory === 'bridal' ? 'active' : ''}`} onClick={() => handleSubcategoryChange('bridal')}>
+          <div className="circle-image-wrapper"><img src={bridalCircleImg} alt="Bridal" /></div>
           <span className="category-label">Bridal</span>
         </div>
-
-        <div 
-          className={`category-circle-item ${activeSubcategory === 'formal' ? 'active' : ''}`}
-          onClick={() => handleSubcategoryChange('formal')}
-        >
-          <div className="circle-image-wrapper">
-            <img src={formalThumb} alt="Formal" />
-          </div>
+        <div className={`category-circle-item ${activeSubcategory === 'formal' ? 'active' : ''}`} onClick={() => handleSubcategoryChange('formal')}>
+          <div className="circle-image-wrapper"><img src={formalCircleImg} alt="Formal" /></div>
           <span className="category-label">Formal</span>
         </div>
       </div>
 
       <div className="shop-filter-bar">
-        <p className="results-count">
-          Showing {filtered.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0}–{Math.min(currentPage * itemsPerPage, filtered.length)} of {filtered.length} results
-        </p>
-        <div className="filter-dropdown-btn">
-          <span>Default sorting</span>
-        </div>
+        <p className="results-count">Showing {filtered.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0}–{Math.min(currentPage * itemsPerPage, filtered.length)} of {filtered.length} results</p>
+        <div className="filter-dropdown-btn"><span>Default sorting</span></div>
       </div>
 
       <div className="shop-products-grid">
@@ -131,6 +165,7 @@ export default function WomenShopPage() {
           <motion.div 
             key={product.id}
             className="shop-product-card"
+            onClick={() => setSelectedProduct(product)}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.05 }}
@@ -139,15 +174,12 @@ export default function WomenShopPage() {
               <span className="shop-discount-tag">{product.discount}</span>
               <img src={product.image} alt={product.title} />
             </div>
-
             <div className="shop-color-swatches">
               {product.colors.map((hex, idx) => (
                 <span key={idx} className="shop-swatch-dot" style={{ backgroundColor: hex }} />
               ))}
             </div>
-
             <h3 className="shop-product-title">{product.title}</h3>
-
             <div className="shop-pricing-box">
               <span className="shop-original-price">{product.originalPrice}</span>
               <span className="shop-sale-price">{product.price}</span>
@@ -159,19 +191,11 @@ export default function WomenShopPage() {
       {totalPages > 1 && (
         <div className="shop-pagination">
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
-            <button 
-              key={num} 
-              className={`page-btn ${currentPage === num ? 'active-page' : ''}`}
-              onClick={() => setCurrentPageNum(num)}
-            >
+            <button key={num} className={`page-btn ${currentPage === num ? 'active-page' : ''}`} onClick={() => setCurrentPageNum(num)}>
               {num}
             </button>
           ))}
-          <button 
-            className="page-btn" 
-            onClick={() => setCurrentPageNum(prev => Math.min(prev + 1, totalPages))}
-            disabled={currentPage === totalPages}
-          >
+          <button className="page-btn" onClick={() => setCurrentPageNum(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages}>
             &gt;
           </button>
         </div>

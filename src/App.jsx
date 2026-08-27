@@ -15,19 +15,64 @@ import WomenShopPage from './WomenShopPage';
 import MenShopPage from './MenShopPage';
 import KidsShopPage from './KidsShopPage';
 import Footer from './Footer';
+import CartDrawer from './CartDrawer';
+import AuthModal from './AuthModal';
 import './index.css';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [showSplash, setShowSplash] = useState(true);
+  
+  // Global Cart State
+  const [cartItems, setCartItems] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
-  // Trigger splash screen only on the landing/home page load
+  // Auth Modal State
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authInitialTab, setAuthInitialTab] = useState('login');
+
+  const handleOpenAuthModal = (tab = 'login') => {
+    setAuthInitialTab(tab);
+    setAuthModalOpen(true);
+  };
+
+  const handleAddToCart = (productWithSpecs) => {
+    setCartItems(prev => {
+      // Check if item with same ID, size, and color already exists
+      const existingIndex = prev.findIndex(
+        item => item.id === productWithSpecs.id && 
+                item.selectedSize === productWithSpecs.selectedSize && 
+                item.selectedColor === productWithSpecs.selectedColor
+      );
+      if (existingIndex > -1) {
+        const updated = [...prev];
+        updated[existingIndex].quantity += productWithSpecs.quantity;
+        return updated;
+      }
+      return [...prev, productWithSpecs];
+    });
+    setIsCartOpen(true); // Automatically open slide-out cart drawer on add
+  };
+
+  const handleUpdateQuantity = (index, newQty) => {
+    if (newQty < 1) return;
+    setCartItems(prev => {
+      const updated = [...prev];
+      updated[index].quantity = newQty;
+      return updated;
+    });
+  };
+
+  const handleRemoveItem = (index) => {
+    setCartItems(prev => prev.filter((_, i) => i !== index));
+  };
+
   useEffect(() => {
     if (currentPage === 'home') {
       setShowSplash(true);
       const timer = setTimeout(() => {
         setShowSplash(false);
-      }, 1800); // Splash screen displays for 1.8 seconds
+      }, 1800);
       return () => clearTimeout(timer);
     } else {
       setShowSplash(false);
@@ -40,7 +85,12 @@ export default function App() {
         {showSplash && currentPage === 'home' && <SplashScreen />}
       </AnimatePresence>
 
-      <Navbar setCurrentPage={setCurrentPage} />
+      <Navbar 
+        setCurrentPage={setCurrentPage} 
+        cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)} 
+        onOpenCart={() => setIsCartOpen(true)}
+        onOpenAuthModal={handleOpenAuthModal}
+      />
 
       {currentPage === 'home' ? (
         <>
@@ -57,13 +107,13 @@ export default function App() {
           <CustomerReviews />
         </>
       ) : currentPage === 'shop' ? (
-        <ShopPage setCurrentPage={setCurrentPage} />
+        <ShopPage setCurrentPage={setCurrentPage} onAddToCart={handleAddToCart} />
       ) : currentPage === 'women' ? (
-        <WomenShopPage />
+        <WomenShopPage onAddToCart={handleAddToCart} />
       ) : currentPage === 'men' ? (
-        <MenShopPage />
+        <MenShopPage onAddToCart={handleAddToCart} />
       ) : currentPage === 'kids' ? (
-        <KidsShopPage />
+        <KidsShopPage onAddToCart={handleAddToCart} />
       ) : currentPage === 'affiliate' ? (
         <AffiliatePage />
       ) : (
@@ -75,6 +125,22 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* Slide-out Cart Drawer */}
+      <CartDrawer 
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        cartItems={cartItems}
+        onUpdateQuantity={handleUpdateQuantity}
+        onRemoveItem={handleRemoveItem}
+      />
+
+      {/* Authentication Modal (Login / Sign Up) */}
+      <AuthModal 
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        initialTab={authInitialTab}
+      />
 
       <Footer setCurrentPage={setCurrentPage} />
     </div>

@@ -24,7 +24,6 @@ export default function Footer({ setCurrentPage }) {
           <h3 className="footer-heading">Information</h3>
           <ul className="footer-links">
             <li onClick={() => setCurrentPage('about')}>About Us</li>
-            <li onClick={() => setCurrentPage('blog')}>Our Blog</li>
             <li onClick={() => setCurrentPage('faq')}>FAQ</li>
             <li onClick={() => setCurrentPage('contacts')}>Contacts</li>
             <li onClick={() => setCurrentPage('terms')}>Terms & Conditions</li>

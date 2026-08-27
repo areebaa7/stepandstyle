@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Link as LinkIcon, 
   Share2, 
@@ -12,17 +12,36 @@ import {
   XCircle, 
   Award, 
   TrendingUp, 
-  MessageSquare 
+  MessageSquare,
+  X 
 } from 'lucide-react';
 import './AffiliatePage.css';
 
-// Dynamic asset imports for hero & Behance-style section cards
 import heroShoeImg from './assets/shoe-8.jpg';
 import tier1Img from './assets/Women/women-mustardshoes.jpeg';
 import tier2Img from './assets/affiliate.jpg';
 import tier3Img from './assets/Women/women-lilac-shoes.jpeg';
 
 export default function AffiliatePage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [email, setEmail] = useState('');
+  const [channel1, setChannel1] = useState('');
+  const [channel2, setChannel2] = useState('');
+
+  const handleOpenModal = (e) => {
+    e.preventDefault();
+    setIsModalOpen(true);
+  };
+
+  const handleSubmitApplication = (e) => {
+    e.preventDefault();
+    alert("Application submitted successfully! We will review your channels and get back to you soon.");
+    setIsModalOpen(false);
+    setEmail('');
+    setChannel1('');
+    setChannel2('');
+  };
+
   return (
     <div className="affiliate-page">
       
@@ -52,7 +71,7 @@ export default function AffiliatePage() {
             </p>
             
             <div className="hero-cta-row">
-              <a href="#apply" className="btn-apply-now">Apply Now</a>
+              <button onClick={handleOpenModal} className="btn-apply-now">Apply Now</button>
               <div className="commission-highlight">
                 <span className="highlight-label">Up To</span>
                 <span className="highlight-value">18% Commission</span>
@@ -81,7 +100,7 @@ export default function AffiliatePage() {
         </div>
       </section>
 
-      {/* Section 01: Program Overview (Redesigned with separate rounded cards) */}
+      {/* Section 01: Program Overview */}
       <section className="affiliate-section overview-section">
         <div className="container">
           <div className="section-header-left">
@@ -91,8 +110,6 @@ export default function AffiliatePage() {
           </div>
 
           <div className="tiers-grid">
-            
-            {/* Row 1: Card Left, Image Right */}
             <motion.div className="tier-card" whileHover={{ y: -4 }} transition={{ duration: 0.3 }}>
               <span className="tier-badge-top">Tier 01</span>
               <h3>Standard Affiliate</h3>
@@ -104,7 +121,6 @@ export default function AffiliatePage() {
               <img src={tier1Img} alt="Standard Affiliate" />
             </motion.div>
 
-            {/* Row 2: Image Left, Card Right */}
             <motion.div className="tier-card-image" whileHover={{ y: -4 }} transition={{ duration: 0.3 }}>
               <img src={tier2Img} alt="Content Creators" />
             </motion.div>
@@ -116,7 +132,6 @@ export default function AffiliatePage() {
               <p className="tier-target">Influencers, fashion pages, and TikTok reviewers sharing high-engagement reels.</p>
             </motion.div>
 
-            {/* Row 3: Card Left, Image Right */}
             <motion.div className="tier-card" whileHover={{ y: -4 }} transition={{ duration: 0.3 }}>
               <span className="tier-badge-top">Tier 03</span>
               <h3>Salon & Bulk Partners</h3>
@@ -127,7 +142,6 @@ export default function AffiliatePage() {
             <motion.div className="tier-card-image" whileHover={{ y: -4 }} transition={{ duration: 0.3 }}>
               <img src={tier3Img} alt="Salon & Bulk Partners" />
             </motion.div>
-
           </div>
 
           <motion.div 
@@ -153,7 +167,7 @@ export default function AffiliatePage() {
         </div>
       </section>
 
-      {/* Section 02: How You Earn (Solid Black Background) */}
+      {/* Section 02: How You Earn */}
       <section className="affiliate-section steps-section dark-section">
         <div className="container">
           <div className="section-header-center">
@@ -213,7 +227,7 @@ export default function AffiliatePage() {
         </div>
       </section>
 
-      {/* Section 04: Content Guidelines (Solid Black Background) */}
+      {/* Section 04: Content Guidelines */}
       <section className="affiliate-section content-guide-section dark-section">
         <div className="container">
           <div className="section-header-center">
@@ -369,7 +383,7 @@ export default function AffiliatePage() {
               <div className="award-badge"><Award size={32} /></div>
               <h4>Monthly Leaderboards & Top Affiliate Award</h4>
               <p className="winner-perk">Winner Gets: <strong>A FREE pair of shoes or cash bonus!</strong></p>
-              <a href="#apply" className="btn-apply-cta">Join Affiliate Program</a>
+              <button onClick={handleOpenModal} className="btn-apply-cta">Join Affiliate Program</button>
             </motion.div>
           </div>
         </div>
@@ -405,6 +419,69 @@ export default function AffiliatePage() {
           </div>
         </div>
       </section>
+
+      {/* AFFILIATE APPLICATION POPUP MODAL */}
+      <AnimatePresence>
+        {isModalOpen && (
+          <div className="affiliate-modal-overlay" onClick={() => setIsModalOpen(false)}>
+            <motion.div 
+              className="affiliate-modal-content"
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <button className="affiliate-modal-close" onClick={() => setIsModalOpen(false)}>
+                <X size={20} />
+              </button>
+
+              <h2>Step & Styl</h2>
+              <h3>Apply for Affiliate</h3>
+
+              <form onSubmit={handleSubmitApplication} className="affiliate-form">
+                <div className="form-group">
+                  <label>Email Address *</label>
+                  <input 
+                    type="email" 
+                    required 
+                    placeholder="name@example.com" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Channel Link 1 (Mandatory) *</label>
+                  <span className="form-hint">Instagram, TikTok, YouTube, or other channel</span>
+                  <input 
+                    type="url" 
+                    required 
+                    placeholder="https://instagram.com/yourhandle" 
+                    value={channel1}
+                    onChange={(e) => setChannel1(e.target.value)}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Channel Link 2 (Optional)</label>
+                  <input 
+                    type="url" 
+                    placeholder="https://tiktok.com/@yourhandle" 
+                    value={channel2}
+                    onChange={(e) => setChannel2(e.target.value)}
+                  />
+                </div>
+
+                <div className="form-actions">
+                  <button type="submit" className="btn-submit-app">Submit Application</button>
+                  <button type="button" className="btn-cancel-app" onClick={() => setIsModalOpen(false)}>Cancel</button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
     </div>
   );

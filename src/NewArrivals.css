@@ -2,14 +2,13 @@
   width: 100%;
   padding: 5rem 2rem;
   background-color: #FFFFFF;
-  border-top-left-radius: 40px;  /* Clearly rounded upper left corner */
-  border-top-right-radius: 40px; /* Clearly rounded upper right corner */
+  border-top-left-radius: 40px;  
+  border-top-right-radius: 40px; 
   position: relative;
   z-index: 5;
-  margin-top: -20px; /* Slight overlap so the rounded corners visibly curve over the hero bottom */
-  box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.2); /* Soft shadow highlights the rounded shape */
+  margin-top: -38px; /* Perfectly seals the top curved edges over the hero */
+  box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.2); 
 }
-
 .section-title {
   font-family: Georgia, serif;
   font-size: 2.2rem;

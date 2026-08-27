@@ -3,10 +3,9 @@ import { User, Heart, ShoppingBag, ChevronDown, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './Navbar.css';
 
-// Import local logo asset
 import logoImg from './assets/step&styl-logo-new.png'; 
 
-export default function Navbar({ setCurrentPage }) {
+export default function Navbar({ setCurrentPage, cartCount, onOpenCart, onOpenAuthModal }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
 
@@ -29,7 +28,6 @@ export default function Navbar({ setCurrentPage }) {
     <header className="navbar">
       <div className="navbar-container">
         
-        {/* Left Side: Hamburger & Brand Logo with Styled Text */}
         <div className="nav-left-group">
           <button 
             className="mobile-menu-toggle" 
@@ -45,11 +43,9 @@ export default function Navbar({ setCurrentPage }) {
           </div>
         </div>
 
-        {/* Desktop Navigation Links */}
         <nav className="nav-links desktop-nav">
           <button onClick={() => handleNavClick('shop')} className="nav-link-btn">Shop</button>
 
-          {/* Category Dropdown */}
           <div 
             className="dropdown-container"
             onMouseEnter={() => setCategoryDropdownOpen(true)}
@@ -71,7 +67,6 @@ export default function Navbar({ setCurrentPage }) {
           <button onClick={() => handleNavClick('home', 'best-sellers-section')} className="sale-link">Sale</button>
         </nav>
 
-        {/* Mobile Animated Dropdown Drawer */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.nav 
@@ -90,18 +85,26 @@ export default function Navbar({ setCurrentPage }) {
               </div>
               <button onClick={() => handleNavClick('home', 'new-arrivals-section')} className="nav-link-btn">New Arrivals</button>
               <button onClick={() => handleNavClick('home', 'best-sellers-section')} className="sale-link">Sale</button>
+              <div className="mobile-auth-group" style={{ display: 'flex', gap: '10px', marginTop: '15px' }}>
+                <button onClick={() => { onOpenAuthModal('login'); setMobileMenuOpen(false); }} className="nav-link-btn">Login</button>
+                <button onClick={() => { onOpenAuthModal('signup'); setMobileMenuOpen(false); }} className="nav-link-btn" style={{ background: '#1F2937', color: '#FFF', borderRadius: '4px', padding: '6px 12px' }}>Register</button>
+              </div>
             </motion.nav>
           )}
         </AnimatePresence>
 
-        {/* Right Action Icons & Affiliate Button */}
         <div className="nav-actions">
           <button className="affiliate-btn" onClick={() => handleNavClick('affiliate')}>AFFILIATE</button>
-          <button className="icon-btn desktop-only" aria-label="Account"><User size={20} /></button>
+          
+          {/* Single Unified User Account Button */}
+          <button className="icon-btn" aria-label="Account" onClick={() => onOpenAuthModal('login')} title="Admin Login / Sign Up">
+            <User size={20} />
+          </button>
+
           <button className="icon-btn" aria-label="Wishlist"><Heart size={20} /></button>
-          <button className="icon-btn" aria-label="Cart">
+          <button className="icon-btn" aria-label="Cart" onClick={onOpenCart}>
             <ShoppingBag size={20} />
-            <span className="cart-badge">0</span>
+            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
           </button>
         </div>
 
