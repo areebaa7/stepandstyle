@@ -280,74 +280,50 @@ async function reserveVariantStock(
   tx: Prisma.TransactionClient,
   reservation: InventoryReservation,
 ) {
-  const result = await tx.$runCommandRaw({
-    findAndModify: 'Product',
-    query: {
-      _id: reservation.productId,
-      inStock: true,
-      variants: {
-        $elemMatch: {
-          color: reservation.color,
-          size: reservation.size,
-          stock: { $gte: reservation.quantity },
-        },
-      },
-    },
-    update: [
-      {
-        $set: {
-          variants: {
-            $map: {
-              input: '$variants',
-              as: 'variant',
-              in: {
-                $cond: [
-                  {
-                    $and: [
-                      { $eq: ['$$variant.color', reservation.color] },
-                      { $eq: ['$$variant.size', reservation.size] },
-                    ],
-                  },
-                  {
-                    $mergeObjects: [
-                      '$$variant',
-                      { stock: { $subtract: ['$$variant.stock', reservation.quantity] } },
-                    ],
-                  },
-                  '$$variant',
-                ],
-              },
-            },
-          },
-          updatedAt: '$$NOW',
-        },
-      },
-      {
-        $set: {
-          inStock: {
-            $anyElementTrue: [
-              {
-                $map: {
-                  input: '$variants',
-                  as: 'variant',
-                  in: { $gt: ['$$variant.stock', 0] },
-                },
-              },
-            ],
-          },
-        },
-      },
-    ],
-    new: true,
-    fields: { _id: 1 },
-  } as Prisma.InputJsonObject);
+  const product = await tx.product.findUnique({
+    where: { id: reservation.productId }
+  });
 
-  if (!rawCommandMatched(result)) {
+  if (!product || !product.inStock) {
     throw new InventoryReservationError(
       `Stock changed for ${reservation.productName}.`,
       reservation,
     );
   }
+
+  const variants = (product.variants as any[]) || [];
+  let found = false;
+  let anyInStock = false;
+
+  const updatedVariants = variants.map(v => {
+    if (v.color === reservation.color && v.size === reservation.size) {
+      if (v.stock < reservation.quantity) {
+        throw new InventoryReservationError(
+          `Stock changed for ${reservation.productName}.`,
+          reservation,
+        );
+      }
+      found = true;
+      v.stock -= reservation.quantity;
+    }
+    if (v.stock > 0) anyInStock = true;
+    return v;
+  });
+
+  if (!found) {
+    throw new InventoryReservationError(
+      `Stock changed for ${reservation.productName}.`,
+      reservation,
+    );
+  }
+
+  await tx.product.update({
+    where: { id: reservation.productId },
+    data: {
+      variants: updatedVariants,
+      inStock: anyInStock
+    }
+  });
 }
 
 async function verifyLegacyProductAvailability(
@@ -355,17 +331,18 @@ async function verifyLegacyProductAvailability(
   productId: string,
   productName: string,
 ) {
-  const result = await tx.$runCommandRaw({
-    findAndModify: 'Product',
-    query: { _id: productId, inStock: true },
-    update: [{ $set: { updatedAt: '$$NOW' } }],
-    new: true,
-    fields: { _id: 1 },
-  } as Prisma.InputJsonObject);
+  const product = await tx.product.findUnique({
+    where: { id: productId }
+  });
 
-  if (!rawCommandMatched(result)) {
+  if (!product || !product.inStock) {
     throw new InventoryReservationError(`${productName} is no longer available.`);
   }
+
+  await tx.product.update({
+    where: { id: productId },
+    data: { updatedAt: new Date() }
+  });
 }
 
 async function withInventoryTransaction<T>(

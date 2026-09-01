@@ -1,7 +1,6 @@
-import { Prisma } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { serializeStorefrontSettings } from '@/lib/storefrontSettings';
-import type { AbandonedCartRecoverySettings, AffiliateProgramSettings, HomepageSectionSetting, StorePolicyPage, StorefrontSettingsDTO } from '@/types/storefrontSettings';
+import type { StorefrontSettingsDTO } from '@/types/storefrontSettings';
 
 export interface StorefrontSettingsUpdate {
   manualPaymentEnabled?: boolean;
@@ -23,60 +22,51 @@ export interface StorefrontSettingsUpdate {
   instagramUrl?: string;
   tiktokUrl?: string;
   youtubeUrl?: string;
-  shippingPolicy?: StorePolicyPage;
-  returnsPolicy?: StorePolicyPage;
-  privacyPolicy?: StorePolicyPage;
-  termsPolicy?: StorePolicyPage;
-  affiliateProgram?: AffiliateProgramSettings;
-  abandonedCartRecovery?: AbandonedCartRecoverySettings;
+  shippingPolicy?: any;
+  returnsPolicy?: any;
+  privacyPolicy?: any;
+  termsPolicy?: any;
+  affiliateProgram?: any;
+  abandonedCartRecovery?: any;
   bankTransferPopupEnabled?: boolean;
   bankTransferDiscountPercent?: number;
   bankTransferPopupTitle?: string;
   bankTransferPopupMessage?: string;
-  homepageSections?: HomepageSectionSetting[];
+  homepageSections?: any;
 }
 
-const getFirstDocument = (result: unknown) => {
-  if (!result || typeof result !== 'object' || Array.isArray(result)) return null;
-  const cursor = (result as Record<string, unknown>).cursor;
-  if (!cursor || typeof cursor !== 'object' || Array.isArray(cursor)) return null;
-  const firstBatch = (cursor as Record<string, unknown>).firstBatch;
-  return Array.isArray(firstBatch) && firstBatch[0] && typeof firstBatch[0] === 'object'
-    ? firstBatch[0] as Record<string, unknown>
-    : null;
-};
+const SETTINGS_ID = 'storefront_settings';
 
 export async function getStorefrontSettings(): Promise<StorefrontSettingsDTO> {
-  const result = await prisma.$runCommandRaw({
-    find: 'StorefrontSettings',
-    filter: { _id: 'storefront_settings' },
-    limit: 1,
+  let settings = await prisma.storefrontSettings.findUnique({
+    where: { id: SETTINGS_ID },
   });
-  return serializeStorefrontSettings(getFirstDocument(result));
+
+  if (!settings) {
+    settings = await prisma.storefrontSettings.create({
+      data: {
+        id: SETTINGS_ID,
+      },
+    });
+  }
+
+  return serializeStorefrontSettings(settings);
 }
 
 export async function updateStorefrontSettings(
   update: StorefrontSettingsUpdate,
 ): Promise<StorefrontSettingsDTO> {
-  const documentUpdate = update as unknown as Prisma.InputJsonObject;
-  await prisma.$runCommandRaw({
-    update: 'StorefrontSettings',
-    updates: [
-      {
-        q: { _id: 'storefront_settings' },
-        u: {
-          $set: {
-            ...documentUpdate,
-            updatedAt: { $date: new Date().toISOString() },
-          },
-          $setOnInsert: {
-            _id: 'storefront_settings',
-          },
-        },
-        upsert: true,
-      },
-    ],
+  const settings = await prisma.storefrontSettings.upsert({
+    where: { id: SETTINGS_ID },
+    create: {
+      id: SETTINGS_ID,
+      ...(update as any),
+    },
+    update: {
+      ...(update as any),
+      updatedAt: new Date(),
+    },
   });
 
-  return getStorefrontSettings();
+  return serializeStorefrontSettings(settings);
 }

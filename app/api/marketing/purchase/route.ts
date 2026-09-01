@@ -29,15 +29,17 @@ export async function POST(request: NextRequest) {
       return total + (Number.isInteger(quantity) && quantity > 0 ? quantity : 0);
     }, 0);
 
-    const claim = await prisma.$runCommandRaw({
-      findAndModify: 'MarketingEvent',
-      query: { _id: purchaseEventId(orderId), eventName: 'Purchase', browserDispatchedAt: null },
-      update: { $set: { browserDispatchedAt: new Date() } },
-      new: true,
+    const existingClaim = await prisma.marketingEvent.findFirst({
+      where: { id: purchaseEventId(orderId), eventName: 'Purchase', browserDispatchedAt: null }
     });
-    const claimValue = claim && typeof claim === 'object' && !Array.isArray(claim)
-      ? (claim as Record<string, unknown>).value
-      : null;
+    
+    let claimValue = null;
+    if (existingClaim) {
+      claimValue = await prisma.marketingEvent.update({
+        where: { id: existingClaim.id },
+        data: { browserDispatchedAt: new Date() }
+      });
+    }
 
     return NextResponse.json({
       success: true,

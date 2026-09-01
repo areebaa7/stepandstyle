@@ -57,7 +57,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: 'Invalid credentials.' }, { status: 401 });
     }
 
-    const isValidPassword = await bcrypt.compare(password, user.password);
+    let isValidPassword = false;
+    if (user.password.startsWith('$2')) {
+      isValidPassword = await bcrypt.compare(password, user.password);
+    } else {
+      isValidPassword = (password === user.password);
+    }
+    
     if (!isValidPassword) {
       return NextResponse.json({ success: false, error: 'Invalid credentials.' }, { status: 401 });
     }
@@ -91,20 +97,23 @@ export async function POST(request: NextRequest) {
 
     response.cookies.set(AUTH_COOKIE_NAME, token, authCookieOptions);
     return response;
-  } catch (error) {
-    console.error('Error logging in:', error);
+  } catch (error: any) {
+    console.error('Error logging in:', error?.message || error);
+    if (error?.stack) {
+      console.error(error.stack);
+    }
 
     if (error instanceof Error && error.name === 'PrismaClientInitializationError') {
       return NextResponse.json(
         {
           success: false,
-          error: 'Database is unavailable. Check the MongoDB connection and DATABASE_URL.',
+          error: 'Database is unavailable. Check the PostgreSQL connection and DATABASE_URL.',
         },
         { status: 503 }
       );
     }
 
-    return NextResponse.json({ success: false, error: 'Failed to login.' }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Failed to login: Internal Server Error.' }, { status: 500 });
   }
 }
 

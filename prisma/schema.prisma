@@ -3,12 +3,12 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id              String    @id @default(cuid()) @map("_id")
+  id              String    @id @default(cuid())
   email           String    @unique
   password        String
   name            String?
@@ -28,7 +28,7 @@ model User {
 }
 
 model CustomerCart {
-  id             String    @id @default(cuid()) @map("_id")
+  id             String    @id @default(cuid())
   userId         String    @unique
   items          Json
   promoCode      String    @default("")
@@ -39,7 +39,7 @@ model CustomerCart {
 }
 
 model CustomerWishlist {
-  id        String   @id @default(cuid()) @map("_id")
+  id        String   @id @default(cuid())
   userId    String   @unique
   items     Json
   createdAt DateTime @default(now())
@@ -48,7 +48,7 @@ model CustomerWishlist {
 }
 
 model AccountToken {
-  id        String           @id @default(cuid()) @map("_id")
+  id        String           @id @default(cuid())
   tokenHash String           @unique
   type      AccountTokenType
   userId    String
@@ -65,7 +65,7 @@ enum AccountTokenType {
 }
 
 model SavedAddress {
-  id         String   @id @default(cuid()) @map("_id")
+  id         String   @id @default(cuid())
   userId     String
   label      String
   fullName   String
@@ -83,7 +83,7 @@ model SavedAddress {
 }
 
 model PromoCode {
-  id              String             @id @default(cuid()) @map("_id")
+  id              String             @id @default(cuid())
   code            String             @unique
   discountPercent Int
   validUntil      DateTime
@@ -100,7 +100,7 @@ model PromoCode {
 }
 
 model InfluencerProfile {
-  id             String           @id @default(cuid()) @map("_id")
+  id             String           @id @default(cuid())
   userId         String           @unique
   defaultPrefix  String
   commissionRate Float            @default(0.1)
@@ -112,7 +112,7 @@ model InfluencerProfile {
 }
 
 model Order {
-  id                 String        @id @default(cuid()) @map("_id")
+  id                 String        @id @default(cuid())
   userId             String?
   promoCodeId        String?
   subtotal           Float
@@ -143,7 +143,7 @@ model Order {
 }
 
 model OrderIdempotency {
-  key         String   @id @map("_id")
+  key         String   @id
   requestHash String
   orderId     String?
   createdAt   DateTime @default(now())
@@ -153,7 +153,7 @@ model OrderIdempotency {
 }
 
 model AuthRateLimit {
-  key             String   @id @map("_id")
+  key             String   @id
   count           Int
   windowStartedAt DateTime
   expiresAt       DateTime
@@ -200,7 +200,7 @@ enum Gender {
 }
 
 model AffiliateApplication {
-  id           String                     @id @default(cuid()) @map("_id")
+  id           String                     @id @default(cuid())
   email        String
   channelLink1 String
   channelLink2 String?
@@ -219,7 +219,7 @@ enum AffiliateApplicationStatus {
 }
 
 model Product {
-  id               String      @id @default(cuid()) @map("_id")
+  id               String      @id @default(cuid())
   slug             String      @unique
   category         String      @default("ALL")
   title            String
@@ -247,7 +247,7 @@ model Product {
 }
 
 model Review {
-  id                 String       @id @default(cuid()) @map("_id")
+  id                 String       @id @default(cuid())
   rating             Int
   comment            String
   userName           String
@@ -278,7 +278,7 @@ enum ReviewStatus {
 }
 
 model Collection {
-  id           String    @id @default(cuid()) @map("_id")
+  id           String    @id @default(cuid())
   name         String    @unique
   slug         String    @unique
   description  String?
@@ -290,7 +290,7 @@ model Collection {
 }
 
 model ShippingRegion {
-  id           String         @id @default(cuid()) @map("_id")
+  id           String         @id @default(cuid())
   name         String         @unique
   shippingCost Float          @default(0)
   cities       ShippingCity[]
@@ -299,7 +299,7 @@ model ShippingRegion {
 }
 
 model ShippingCity {
-  id        String         @id @default(cuid()) @map("_id")
+  id        String         @id @default(cuid())
   name      String
   regionId  String
   region    ShippingRegion @relation(fields: [regionId], references: [id])
@@ -310,7 +310,7 @@ model ShippingCity {
 }
 
 model SaleEvent {
-  id                String   @id @default(cuid()) @map("_id")
+  id                String   @id @default(cuid())
   name              String   @unique
   bannerText        String
   discountPercent   Int      @default(0)
@@ -322,7 +322,7 @@ model SaleEvent {
 }
 
 model Blog {
-  id          String   @id @default(cuid()) @map("_id")
+  id          String   @id @default(cuid())
   slug        String   @unique
   title       String
   description String
@@ -339,7 +339,7 @@ model Blog {
 }
 
 model Banner {
-  id               String    @id @default(cuid()) @map("_id")
+  id               String    @id @default(cuid())
   category         String    @default("HOME_MAIN") // e.g. HOME_MAIN, MEN_SECTION, WOMEN_SECTION, KIDS_SECTION, SALE
   desktopImageUrl  String
   mobileImageUrl   String
@@ -359,7 +359,7 @@ model Banner {
 }
 
 model HomeReel {
-  id          String   @id @default(cuid()) @map("_id")
+  id          String   @id @default(cuid())
   category    String   @default("SHORT_REELS")
   title       String
   caption     String?
@@ -373,7 +373,7 @@ model HomeReel {
 }
 
 model MarketingSettings {
-  id                          String   @id @default("marketing_settings") @map("_id")
+  id                          String   @id @default("marketing_settings")
   ga4MeasurementId            String?
   gtmContainerId              String?
   metaPixelId                 String?
@@ -394,7 +394,7 @@ model MarketingSettings {
 }
 
 model StorefrontSettings {
-  id                          String   @id @default("storefront_settings") @map("_id")
+  id                          String   @id @default("storefront_settings")
   manualPaymentEnabled        Boolean  @default(false)
   bankName                    String?
   bankAccountTitle            String?
@@ -429,7 +429,7 @@ model StorefrontSettings {
 }
 
 model SplashScreenSettings {
-  id              String   @id @default("splash_screen_settings") @map("_id")
+  id              String   @id @default("splash_screen_settings")
   enabled         Boolean  @default(false)
   title           String?
   subtitle        String?
@@ -444,7 +444,7 @@ model SplashScreenSettings {
 }
 
 model MarketingEvent {
-  id                  String    @id @default(cuid()) @map("_id")
+  id                  String    @id @default(cuid())
   eventName           String
   eventData           Json?
   url                 String?
@@ -453,7 +453,7 @@ model MarketingEvent {
 }
 
 model NewsletterSubscriber {
-  id                 String               @id @default(cuid()) @map("_id")
+  id                 String               @id @default(cuid())
   email              String               @unique
   status             NewsletterStatus     @default(SUBSCRIBED)
   source             String
@@ -479,7 +479,7 @@ model NewsletterSubscriber {
 }
 
 model NewsletterRateLimit {
-  id              String   @id @map("_id")
+  id              String   @id
   count           Int      @default(1)
   windowStartedAt DateTime @default(now())
   expiresAt       DateTime
@@ -497,4 +497,18 @@ enum NewsletterSyncStatus {
   SYNCED
   SKIPPED
   FAILED
+}
+
+model AbandonedCart {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  email           String
+  items           Json
+  subtotal        Float
+  status          String
+  recoveredAt     DateTime?
+  recoverySentAt  DateTime?
+  lastActivity    DateTime  @default(now())
+
+  @@map("AbandonedCarts")
 }

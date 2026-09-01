@@ -35,49 +35,38 @@ export async function consumeAuthRateLimit({
   windowMs: number;
 }): Promise<AuthRateLimitDecision> {
   const key = rateLimitKey(scope, identifier);
-  const result = await prisma.$runCommandRaw({
-    findAndModify: 'AuthRateLimit',
-    query: { _id: key },
-    update: [
-      {
-        $set: {
-          count: {
-            $cond: [
-              { $gt: ['$expiresAt', '$$NOW'] },
-              { $add: [{ $ifNull: ['$count', 0] }, 1] },
-              1,
-            ],
-          },
-          windowStartedAt: {
-            $cond: [
-              { $gt: ['$expiresAt', '$$NOW'] },
-              { $ifNull: ['$windowStartedAt', '$$NOW'] },
-              '$$NOW',
-            ],
-          },
-          expiresAt: {
-            $cond: [
-              { $gt: ['$expiresAt', '$$NOW'] },
-              '$expiresAt',
-              { $dateAdd: { startDate: '$$NOW', unit: 'millisecond', amount: windowMs } },
-            ],
-          },
-          createdAt: { $ifNull: ['$createdAt', '$$NOW'] },
-          updatedAt: '$$NOW',
-        },
-      },
-    ],
-    upsert: true,
-    new: true,
-  } as Prisma.InputJsonObject);
+  const now = new Date();
 
-  const value = result && typeof result === 'object' && !Array.isArray(result)
-    ? (result as Record<string, unknown>).value
-    : null;
-  const record = value && typeof value === 'object' && !Array.isArray(value)
-    ? value as Record<string, unknown>
-    : null;
-  const count = Number(record?.count);
+  const existing = await prisma.authRateLimit.findUnique({
+    where: { key }
+  });
+
+  let newCount = 1;
+  let expiresAt = new Date(now.getTime() + windowMs);
+  let windowStartedAt = now;
+
+  if (existing && existing.expiresAt > now) {
+    newCount = existing.count + 1;
+    expiresAt = existing.expiresAt;
+    windowStartedAt = existing.windowStartedAt;
+  }
+
+  const record = await prisma.authRateLimit.upsert({
+    where: { key },
+    update: {
+      count: newCount,
+      expiresAt: expiresAt,
+      windowStartedAt: windowStartedAt
+    },
+    create: {
+      key,
+      count: newCount,
+      expiresAt: expiresAt,
+      windowStartedAt: windowStartedAt
+    }
+  });
+
+  const count = record.count;
   if (!Number.isInteger(count) || count < 1) {
     throw new Error('Authentication rate-limit state could not be loaded.');
   }

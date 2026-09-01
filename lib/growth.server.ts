@@ -25,25 +25,8 @@ const firstBatch = (result: unknown): Record<string, unknown>[] => {
 let newsletterIndexesPromise: Promise<unknown> | null = null;
 
 async function ensureNewsletterIndexes() {
-  if (!newsletterIndexesPromise) {
-    newsletterIndexesPromise = Promise.all([
-      prisma.$runCommandRaw({
-        createIndexes: 'NewsletterSubscribers',
-        indexes: [
-          { key: { email: 1 }, name: 'NewsletterSubscribers_email_key', unique: true },
-          { key: { unsubscribeToken: 1 }, name: 'NewsletterSubscribers_unsubscribeToken_key', unique: true },
-        ],
-      }),
-      prisma.$runCommandRaw({
-        createIndexes: 'NewsletterRateLimits',
-        indexes: [{ key: { expiresAt: 1 }, name: 'NewsletterRateLimits_expiresAt_ttl', expireAfterSeconds: 0 }],
-      }),
-    ]).catch((error) => {
-      newsletterIndexesPromise = null;
-      throw error;
-    });
-  }
-  await newsletterIndexesPromise;
+  // Indexes are managed by Prisma schema in PostgreSQL via `npx prisma db push`
+  return Promise.resolve();
 }
 
 const hashIdentity = (value: string) => createHash('sha256')
@@ -172,74 +155,67 @@ export async function unsubscribeNewsletter(token: string) {
 export async function saveAbandonedCart(
   userId: string,
   email: string,
-  items: Prisma.InputJsonObject[],
+  items: unknown,
   subtotal: number,
 ) {
-  const now = { $date: new Date().toISOString() };
-  await prisma.$runCommandRaw({
-    update: 'AbandonedCarts',
-    updates: [{
-      q: { userId },
-      u: {
-        $set: {
-          userId,
-          email: email.toLowerCase(),
-          items,
-          subtotal,
-          status: 'ACTIVE',
-          lastActivity: now,
-          recoverySentAt: null,
-        },
-        $setOnInsert: { createdAt: now },
-      },
-      upsert: true,
-    }],
+  const now = new Date();
+  await prisma.abandonedCart.upsert({
+    where: { userId },
+    update: {
+      email: email.toLowerCase(),
+      items: items || [],
+      subtotal,
+      status: 'ACTIVE',
+      lastActivity: now,
+    },
+    create: {
+      userId,
+      email: email.toLowerCase(),
+      items: items || [],
+      subtotal,
+      status: 'ACTIVE',
+      lastActivity: now,
+    },
   });
 }
 
 export async function markAbandonedCartRecovered(userId: string) {
-  await prisma.$runCommandRaw({
-    update: 'AbandonedCarts',
-    updates: [{
-      q: { userId },
-      u: { $set: { status: 'RECOVERED', recoveredAt: { $date: new Date().toISOString() } } },
-      multi: true,
-    }],
+  await prisma.abandonedCart.updateMany({
+    where: { userId },
+    data: { status: 'RECOVERED', recoveredAt: new Date() },
   });
 }
 
 export async function getRecoverableCarts(delayHours = 2, enabledAt?: string | null): Promise<AbandonedCartDocument[]> {
-  const cutoff = new Date(Date.now() - delayHours * 60 * 60 * 1000).toISOString();
-  const validEnabledAt = enabledAt && !Number.isNaN(Date.parse(enabledAt)) ? enabledAt : null;
-  const activityWindow: Prisma.InputJsonObject = validEnabledAt
-    ? { $lte: { $date: cutoff }, $gte: { $date: validEnabledAt } }
-    : { $lte: { $date: cutoff } };
-  const result = await prisma.$runCommandRaw({
-    find: 'AbandonedCarts',
-    filter: {
-      status: 'ACTIVE',
-      recoverySentAt: null,
-      lastActivity: activityWindow,
-    },
-    limit: 50,
+  const cutoff = new Date(Date.now() - delayHours * 3600000);
+  const validEnabledAt = enabledAt ? new Date(enabledAt) : null;
+  
+  const whereClause: any = {
+    status: 'ACTIVE',
+    recoverySentAt: null,
+    lastActivity: { lte: cutoff }
+  };
+  
+  if (validEnabledAt) {
+    whereClause.lastActivity.gte = validEnabledAt;
+  }
+
+  const carts = await prisma.abandonedCart.findMany({
+    where: whereClause,
+    take: 50,
   });
-  return firstBatch(result)
-    .map<AbandonedCartDocument>((document) => ({
-      _id: typeof document._id === 'string' ? document._id : undefined,
-      userId: String(document.userId || ''),
-      email: String(document.email || ''),
-      subtotal: Number(document.subtotal) || 0,
-      status: document.status === 'RECOVERED' ? 'RECOVERED' : 'ACTIVE',
-    }))
-    .filter((cart) => Boolean(cart.userId && cart.email));
+  
+  return carts.map((cart: any) => ({
+    userId: cart.userId,
+    email: cart.email,
+    subtotal: cart.subtotal,
+    status: cart.status as 'ACTIVE' | 'RECOVERED',
+  }));
 }
 
 export async function markRecoveryEmailSent(userId: string) {
-  await prisma.$runCommandRaw({
-    update: 'AbandonedCarts',
-    updates: [{
-      q: { userId },
-      u: { $set: { recoverySentAt: { $date: new Date().toISOString() } } },
-    }],
+  await prisma.abandonedCart.updateMany({
+    where: { userId },
+    data: { recoverySentAt: new Date() },
   });
 }
