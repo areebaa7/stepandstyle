@@ -1,0 +1,1 @@
+fetch('http://localhost:3001/api/auth/login', { method: 'POST', body: JSON.stringify({email:'admin@example.com',password:'password'}), headers: {'Content-Type':'application/json'} }).then(r=>r.text()).then(t=>console.log(t.substring(0,2000)));

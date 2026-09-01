@@ -1,0 +1,1 @@
+const { PrismaClient } = require('@prisma/client'); const prisma = new PrismaClient(); prisma.product.findMany({ where: undefined, include: { collection: true } }).then(c => { console.log('Count:', c.length); prisma.$disconnect(); }).catch(e => console.error(e));

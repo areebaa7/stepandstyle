@@ -1,0 +1,76 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+/backups/
+
+# local database (mongod data directory - never commit)
+/.mongo-data/
+
+# misc
+.DS_Store
+Thumbs.db
+desktop.ini
+*.pem
+
+# editors
+/.vscode/
+/.idea/
+/.vs/
+
+# debug
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files - keep the template, ignore everything with real secrets
+.env*
+!.env.example
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# uploaded receipts
+/public/uploads
+
+# generated at build time by next-sitemap (postbuild)
+/public/sitemap.xml
+/public/sitemap-*.xml
+/public/robots.txt
+
+# --- mock assets kept out of the repo to stay under GitHub's size limits ---
+# Legacy demo path, byte-identical to /public/catalog. polish-demo-content.mjs
+# rewrites /demo/ -> /catalog/, so nothing at runtime resolves here.
+/public/demo/
+
+# Old product image set, byte-identical duplicates of /public/catalog/products.
+# The .mp4 files in this folder ARE referenced by seed-demo-content.mjs, so keep them.
+/public/product/*
+!/public/product/*.mp4
+
+# Oversized mock images with no reference anywhere in the source.
+/public/collections/slippers.jpg
+/public/Banner/closeup.jpg

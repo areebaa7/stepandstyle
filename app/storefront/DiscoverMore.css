@@ -1,0 +1,345 @@
+.discover-more-section {
+  width: 100%;
+  padding: 6rem 0;
+  background-color: #000000;
+  overflow: hidden;
+  border-top-left-radius: 40px;  /* Smoothly rounded upper left border */
+  border-top-right-radius: 40px; /* Smoothly rounded upper right border */
+  position: relative;
+  z-index: 2;
+}
+
+/* Header styling */
+.discover-header-container {
+  max-width: 1400px;
+  margin: 0 auto 3.5rem auto;
+  text-align: center;
+  padding: 0 2rem;
+}
+
+.discover-top-tagline {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #c084fc;
+  display: block;
+  margin-bottom: 0.8rem;
+}
+
+.discover-main-title {
+  font-family: Georgia, serif;
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.8rem;
+}
+
+.discover-subtext {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 1rem;
+  color: #9CA3AF;
+  letter-spacing: 0.02em;
+}
+
+/* Carousel Track & Container */
+.discover-carousel-container {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+}
+
+.discover-track {
+  display: flex;
+  gap: 2rem;
+  width: max-content;
+  padding: 0 1rem;
+}
+
+/* Wider and taller premium luxury cards */
+.discover-card {
+  position: relative;
+  width: 390px;
+  height: 480px;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  background-color: #121212;
+  flex-shrink: 0;
+  transition: transform 0.4s ease, border-color 0.4s ease;
+  border: 1px solid rgba(155, 77, 224, 0.2);
+}
+
+.discover-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(155, 77, 224, 0.7); /* Enhanced purple glow on hover */
+}
+
+.discover-card-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.85);
+  transition: transform 0.6s ease;
+}
+
+.discover-card:hover .discover-card-video {
+  transform: scale(1.04);
+}
+
+/* Rich Purple-to-Dark Gradient Overlay */
+.discover-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(155, 77, 224, 0) 25%, rgba(68, 22, 107, 0.75) 70%, rgba(18, 18, 18, 0.95) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 2.5rem 2rem;
+}
+
+.discover-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: #FFFFFF;
+}
+
+/* Clean Purple Tag */
+.discover-purple-tag {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #e9d5ff; /* Soft bright purple accent */
+  margin-bottom: 0.6rem;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.discover-card-title {
+  font-family: Georgia, serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.25;
+  margin-bottom: 0.6rem;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.discover-card-desc {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.85rem;
+  color: #F3F4F6;
+  line-height: 1.45;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* Modern Squared White Button inside Card */
+.btn-discover-shop {
+  background-color: #FFFFFF;
+  color: #1F2937;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+  padding: 0.75rem 2rem;
+  letter-spacing: 0.15em;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 0px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.25s ease;
+}
+
+.btn-discover-shop:hover {
+  background-color: #9b4de0;
+  color: #FFFFFF;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .discover-card {
+    width: 310px;
+    height: 420px;
+  }
+}.discover-more-section {
+  width: 100%;
+  padding: 6rem 0;
+  background-color: #000000;
+  overflow: hidden;
+  border-top-left-radius: 40px;  /* Smoothly rounded upper left border */
+  border-top-right-radius: 40px; /* Smoothly rounded upper right border */
+  position: relative;
+  z-index: 2;
+}
+
+/* Header styling */
+.discover-header-container {
+  max-width: 1400px;
+  margin: 0 auto 3.5rem auto;
+  text-align: center;
+  padding: 0 2rem;
+}
+
+.discover-top-tagline {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #c084fc;
+  display: block;
+  margin-bottom: 0.8rem;
+}
+
+.discover-main-title {
+  font-family: Georgia, serif;
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.8rem;
+}
+
+.discover-subtext {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 1rem;
+  color: #9CA3AF;
+  letter-spacing: 0.02em;
+}
+
+/* Carousel Track & Container */
+.discover-carousel-container {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+}
+
+.discover-track {
+  display: flex;
+  gap: 2rem;
+  width: max-content;
+  padding: 0 1rem;
+}
+
+/* Wider and taller premium luxury cards */
+.discover-card {
+  position: relative;
+  width: 390px;
+  height: 480px;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  background-color: #121212;
+  flex-shrink: 0;
+  transition: transform 0.4s ease, border-color 0.4s ease;
+  border: 1px solid rgba(155, 77, 224, 0.2);
+}
+
+.discover-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(155, 77, 224, 0.7); /* Enhanced purple glow on hover */
+}
+
+.discover-card-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.85);
+  transition: transform 0.6s ease;
+}
+
+.discover-card:hover .discover-card-video {
+  transform: scale(1.04);
+}
+
+/* Custom #392989 Gradient Overlay */
+.discover-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(57, 41, 137, 0) 25%, rgba(57, 41, 137, 0.75) 70%, rgba(18, 18, 18, 0.95) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 2.5rem 2rem;
+}
+
+.discover-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: #FFFFFF;
+}
+
+/* Clean Purple Tag */
+.discover-purple-tag {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #e9d5ff; /* Soft bright purple accent */
+  margin-bottom: 0.6rem;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.discover-card-title {
+  font-family: Georgia, serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.25;
+  margin-bottom: 0.6rem;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.discover-card-desc {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.85rem;
+  color: #F3F4F6;
+  line-height: 1.45;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* Modern Squared White Button inside Card */
+.btn-discover-shop {
+  background-color: #FFFFFF;
+  color: #1F2937;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+  padding: 0.75rem 2rem;
+  letter-spacing: 0.15em;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 0px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.25s ease;
+}
+
+.btn-discover-shop:hover {
+  background-color: #9b4de0;
+  color: #FFFFFF;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .discover-card {
+    width: 310px;
+    height: 420px;
+  }
+}

@@ -1,0 +1,9 @@
+[
+  { "region": "Punjab", "shippingCost": 300, "cities": ["Lahore", "Rawalpindi", "Faisalabad", "Multan", "Gujranwala", "Sialkot", "Bahawalpur", "Sargodha", "Rahim Yar Khan", "Dera Ghazi Khan"] },
+  { "region": "Sindh", "shippingCost": 350, "cities": ["Karachi", "Hyderabad", "Sukkur", "Larkana", "Nawabshah", "Mirpur Khas", "Jacobabad", "Shikarpur"] },
+  { "region": "Khyber Pakhtunkhwa", "shippingCost": 300, "cities": ["Peshawar", "Mardan", "Abbottabad", "Swat", "Kohat", "Dera Ismail Khan", "Mansehra"] },
+  { "region": "Balochistan", "shippingCost": 350, "cities": ["Quetta", "Gwadar", "Turbat", "Khuzdar", "Chaman", "Sibi"] },
+  { "region": "Gilgit-Baltistan", "shippingCost": 350, "cities": ["Gilgit", "Skardu", "Hunza", "Chilas"] },
+  { "region": "Azad Jammu and Kashmir", "shippingCost": 350, "cities": ["Muzaffarabad", "Mirpur", "Kotli", "Bhimber"] },
+  { "region": "Islamabad Capital Territory", "shippingCost": 300, "cities": ["Islamabad"] }
+]

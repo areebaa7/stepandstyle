@@ -1,0 +1,84 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* This completely prevents the white vertical strip/gap */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #EDE9FE;
+  color: #1F2937;
+}
+
+#root {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
+  border-inline: none !important;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.ecommerce-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #FFFFFF;
+  overflow-x: hidden;
+}
+
+.featured-section {
+  padding: 6rem 2rem;
+  text-align: center;
+  background-color: #FFFFFF;
+}
+
+.section-heading {
+  font-family: Georgia, serif;
+  font-size: 2.5rem;
+  color: #1F2937;
+  margin-bottom: 1rem;
+}
+
+.section-subtext {
+  color: #4B5563;
+  font-size: 1.05rem;
+}
+
+.dynamic-page-view {
+  padding: 6rem 2rem;
+  text-align: center;
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background-color: #FFFFFF;
+}
+
+.page-header-banner {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.page-title {
+  font-family: Georgia, serif;
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #1F2937;
+}
+
+.page-subtitle {
+  color: #4B5563;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}

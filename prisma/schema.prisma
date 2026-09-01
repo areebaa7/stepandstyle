@@ -1,0 +1,500 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String    @id @default(cuid()) @map("_id")
+  email           String    @unique
+  password        String
+  name            String?
+  emailVerifiedAt DateTime?
+  role            UserRole  @default(USER)
+  adminKeyUsed    Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  influencerProfile InfluencerProfile?
+  orders            Order[]
+  accountTokens     AccountToken[]
+  savedAddresses    SavedAddress[]
+  customerCart      CustomerCart?
+  customerWishlist  CustomerWishlist?
+  reviews           Review[]
+}
+
+model CustomerCart {
+  id             String    @id @default(cuid()) @map("_id")
+  userId         String    @unique
+  items          Json
+  promoCode      String    @default("")
+  promoAppliedAt DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CustomerWishlist {
+  id        String   @id @default(cuid()) @map("_id")
+  userId    String   @unique
+  items     Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AccountToken {
+  id        String           @id @default(cuid()) @map("_id")
+  tokenHash String           @unique
+  type      AccountTokenType
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime         @default(now())
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, type])
+}
+
+enum AccountTokenType {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+}
+
+model SavedAddress {
+  id         String   @id @default(cuid()) @map("_id")
+  userId     String
+  label      String
+  fullName   String
+  phone      String
+  address    String
+  city       String
+  region     String
+  postalCode String?
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model PromoCode {
+  id              String             @id @default(cuid()) @map("_id")
+  code            String             @unique
+  discountPercent Int
+  validUntil      DateTime
+  usageLimit      Int?
+  prefix          String?
+  usageCount      Int                @default(0)
+  totalGrossSales Float              @default(0)
+  totalDiscount   Float              @default(0)
+  influencerId    String?
+  influencer      InfluencerProfile? @relation(fields: [influencerId], references: [id])
+  orders          Order[]
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+}
+
+model InfluencerProfile {
+  id             String           @id @default(cuid()) @map("_id")
+  userId         String           @unique
+  defaultPrefix  String
+  commissionRate Float            @default(0.1)
+  status         InfluencerStatus @default(ACTIVE)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  user           User             @relation(fields: [userId], references: [id])
+  promoCodes     PromoCode[]
+}
+
+model Order {
+  id                 String        @id @default(cuid()) @map("_id")
+  userId             String?
+  promoCodeId        String?
+  subtotal           Float
+  discountAmount     Float
+  shippingCost       Float         @default(0)
+  total              Float
+  status             OrderStatus   @default(PENDING)
+  paymentMethod      PaymentMethod
+  paymentStatus      PaymentStatus @default(PENDING)
+  paymentIntentId    String?
+  receiptUrl         String?
+  directAccount      String?
+  shippingName       String
+  shippingEmail      String
+  shippingPhone      String
+  shippingAddress    String
+  shippingCity       String
+  shippingRegion     String
+  shippingPostalCode String
+  items              Json
+  adminNote          String?
+  approvedAt         DateTime?
+  disapprovedAt      DateTime?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  user               User?         @relation(fields: [userId], references: [id])
+  promoCode          PromoCode?    @relation(fields: [promoCodeId], references: [id])
+}
+
+model OrderIdempotency {
+  key         String   @id @map("_id")
+  requestHash String
+  orderId     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([orderId])
+}
+
+model AuthRateLimit {
+  key             String   @id @map("_id")
+  count           Int
+  windowStartedAt DateTime
+  expiresAt       DateTime
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  INFLUENCER
+}
+
+enum PaymentMethod {
+  CARD
+  DIRECT
+  COD
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  DISAPPROVED
+}
+
+enum InfluencerStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  COMPLETED
+  CANCELLED
+}
+
+enum Gender {
+  MEN
+  WOMEN
+  KIDS
+  UNISEX
+}
+
+model AffiliateApplication {
+  id           String                     @id @default(cuid()) @map("_id")
+  email        String
+  channelLink1 String
+  channelLink2 String?
+  status       AffiliateApplicationStatus @default(PENDING)
+  reviewedBy   String?
+  reviewedAt   DateTime?
+  notes        String?
+  createdAt    DateTime                   @default(now())
+  updatedAt    DateTime                   @updatedAt
+}
+
+enum AffiliateApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Product {
+  id               String      @id @default(cuid()) @map("_id")
+  slug             String      @unique
+  category         String      @default("ALL")
+  title            String
+  description      String
+  shortDescription String
+  price            Float
+  salePrice        Float?
+  discount         Int?        @default(0)
+  inStock          Boolean     @default(true)
+  image            String?
+  images           String[]
+  colors           String[]
+  videoUrl         String?
+  advantages       Json?
+  specifications   Json?
+  features         Json?
+  variants         Json?       @default("[]")
+  collectionId     String?
+  collection       Collection? @relation(fields: [collectionId], references: [id])
+  reviews          Review[]
+  rating           Float       @default(0)
+  saleCount        Int         @default(0)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+}
+
+model Review {
+  id                 String       @id @default(cuid()) @map("_id")
+  rating             Int
+  comment            String
+  userName           String
+  userEmail          String?
+  userId             String?
+  productId          String
+  status             ReviewStatus @default(PENDING)
+  isVerifiedPurchase Boolean      @default(false)
+  isFeatured         Boolean      @default(false)
+  images             Json?
+  videoUrl           String?
+  moderatedAt        DateTime?
+  moderatedBy        String?
+  moderationNote     String?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  product            Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  reviewer           User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([productId, status])
+  @@index([userId])
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Collection {
+  id           String    @id @default(cuid()) @map("_id")
+  name         String    @unique
+  slug         String    @unique
+  description  String?
+  image        String?
+  targetGender Gender    @default(UNISEX)
+  products     Product[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model ShippingRegion {
+  id           String         @id @default(cuid()) @map("_id")
+  name         String         @unique
+  shippingCost Float          @default(0)
+  cities       ShippingCity[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model ShippingCity {
+  id        String         @id @default(cuid()) @map("_id")
+  name      String
+  regionId  String
+  region    ShippingRegion @relation(fields: [regionId], references: [id])
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@unique([name, regionId])
+}
+
+model SaleEvent {
+  id                String   @id @default(cuid()) @map("_id")
+  name              String   @unique
+  bannerText        String
+  discountPercent   Int      @default(0)
+  targetCollections Json? // Array of collection IDs
+  targetProducts    Json? // Array of product IDs
+  isActive          Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Blog {
+  id          String   @id @default(cuid()) @map("_id")
+  slug        String   @unique
+  title       String
+  description String
+  content     String
+  image       String?
+  images      Json?
+  videoUrl    String?
+  author      String?
+  category    String?
+  tags        Json?
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Banner {
+  id               String    @id @default(cuid()) @map("_id")
+  category         String    @default("HOME_MAIN") // e.g. HOME_MAIN, MEN_SECTION, WOMEN_SECTION, KIDS_SECTION, SALE
+  desktopImageUrl  String
+  mobileImageUrl   String
+  desktopImageSlot Int?      @default(1) // 1 = desktopImageUrl (Image 1), 2 = mobileImageUrl (Image 2)
+  mobileImageSlot  Int?      @default(2) // 1 = desktopImageUrl (Image 1), 2 = mobileImageUrl (Image 2)
+  title            String?
+  subtitle         String?
+  textPosition     String    @default("OVERLAY") // OVERLAY, OUTSIDE_LEFT, OUTSIDE_RIGHT
+  ctaText          String?
+  ctaLink          String?
+  isActive         Boolean   @default(true)
+  order            Int       @default(0)
+  startDate        DateTime?
+  endDate          DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model HomeReel {
+  id          String   @id @default(cuid()) @map("_id")
+  category    String   @default("SHORT_REELS")
+  title       String
+  caption     String?
+  videoUrl    String
+  posterUrl   String?
+  productLink String?
+  isActive    Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model MarketingSettings {
+  id                          String   @id @default("marketing_settings") @map("_id")
+  ga4MeasurementId            String?
+  gtmContainerId              String?
+  metaPixelId                 String?
+  metaPixelEnabled            Boolean? @default(false)
+  metaCapiToken               String?
+  googleAdsConversionId       String?
+  newsletterPopupEnabled      Boolean? @default(true)
+  newsletterPopupDelaySeconds Int?     @default(20)
+  newsletterIncentiveEnabled  Boolean? @default(false)
+  newsletterIncentiveText     String?  @default("Join our list for private offers and new arrivals.")
+  newsletterDiscountCode      String?
+  emailMarketingProvider      String?  @default("NONE")
+  wooCommerceSyncEnabled      Boolean? @default(false)
+  newsletterConsentText       String?  @default("I agree to receive marketing emails from Step & Styl. I can unsubscribe at any time.")
+  newsletterConsentVersion    String?  @default("2026-01")
+  privacyPolicyUrl            String?  @default("/privacy-policy")
+  updatedAt                   DateTime @updatedAt
+}
+
+model StorefrontSettings {
+  id                          String   @id @default("storefront_settings") @map("_id")
+  manualPaymentEnabled        Boolean  @default(false)
+  bankName                    String?
+  bankAccountTitle            String?
+  bankAccountNumber           String?
+  bankIban                    String?
+  easypaisaAccountTitle       String?
+  easypaisaAccountNumber      String?
+  jazzcashAccountTitle        String?
+  jazzcashAccountNumber       String?
+  manualPaymentInstructions   String?
+  supportEmail                String?
+  supportPhone                String?
+  whatsappUrl                 String?
+  businessAddress             String?
+  returnAddress               String?
+  facebookUrl                 String?
+  instagramUrl                String?
+  tiktokUrl                   String?
+  youtubeUrl                  String?
+  shippingPolicy              Json?
+  returnsPolicy               Json?
+  privacyPolicy               Json?
+  termsPolicy                 Json?
+  affiliateProgram            Json?
+  abandonedCartRecovery       Json?
+  bankTransferPopupEnabled    Boolean  @default(true)
+  bankTransferDiscountPercent Float    @default(5)
+  bankTransferPopupTitle      String   @default("Save 5% with Bank Transfer")
+  bankTransferPopupMessage    String   @default("Enjoy extra 5% discount with direct bank transfer.")
+  homepageSections            Json?
+  updatedAt                   DateTime @updatedAt
+}
+
+model SplashScreenSettings {
+  id              String   @id @default("splash_screen_settings") @map("_id")
+  enabled         Boolean  @default(false)
+  title           String?
+  subtitle        String?
+  imageUrl        String?
+  backgroundColor String?  @default("#A855F7")
+  textColor       String?  @default("#FFFFFF")
+  buttonText      String?  @default("Enter Site")
+  buttonEnabled   Boolean  @default(true)
+  dismissMode     String?  @default("AUTO")
+  durationSeconds Int?     @default(3)
+  updatedAt       DateTime @updatedAt
+}
+
+model MarketingEvent {
+  id                  String    @id @default(cuid()) @map("_id")
+  eventName           String
+  eventData           Json?
+  url                 String?
+  browserDispatchedAt DateTime?
+  createdAt           DateTime  @default(now())
+}
+
+model NewsletterSubscriber {
+  id                 String               @id @default(cuid()) @map("_id")
+  email              String               @unique
+  status             NewsletterStatus     @default(SUBSCRIBED)
+  source             String
+  consentAt          DateTime
+  consentText        String
+  consentVersion     String
+  ipHash             String?
+  userAgent          String?
+  provider           String               @default("NONE")
+  providerContactId  String?
+  providerSyncStatus NewsletterSyncStatus @default(PENDING)
+  providerSyncedAt   DateTime?
+  providerError      String?
+  wooSyncStatus      NewsletterSyncStatus @default(PENDING)
+  wooSyncedAt        DateTime?
+  wooError           String?
+  unsubscribeToken   String               @unique
+  unsubscribedAt     DateTime?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+
+  @@map("NewsletterSubscribers")
+}
+
+model NewsletterRateLimit {
+  id              String   @id @map("_id")
+  count           Int      @default(1)
+  windowStartedAt DateTime @default(now())
+  expiresAt       DateTime
+
+  @@map("NewsletterRateLimits")
+}
+
+enum NewsletterStatus {
+  SUBSCRIBED
+  UNSUBSCRIBED
+}
+
+enum NewsletterSyncStatus {
+  PENDING
+  SYNCED
+  SKIPPED
+  FAILED
+}
