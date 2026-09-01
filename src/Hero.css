@@ -1,0 +1,143 @@
+.hero-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #121212;
+}
+
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #121212;
+}
+
+.hero-media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.72);
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.hero-text-group {
+  position: relative;
+  width: 100%;
+  max-width: 850px;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-title {
+  font-family: Georgia, serif;
+  font-size: clamp(2.2rem, 4.5vw, 4.2rem);
+  font-weight: 500;
+  color: #FFFFFF;
+  letter-spacing: 0.05em;
+  line-height: 1.15;
+  text-transform: uppercase;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+  margin: 0 0 1rem 0;
+}
+
+.hero-subtitle-text {
+  font-weight: 400;
+}
+
+.hero-editorial-tags {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: clamp(0.75rem, 2vw, 0.85rem);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: #EDE9FE;
+  text-transform: uppercase;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+  margin-bottom: 2rem;
+}
+
+.dot-separator {
+  font-size: 0.5rem;
+  color: #D1D5DB;
+}
+
+.hero-buttons {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-shop-now {
+  background-color: #FFFFFF;
+  color: #1F2937;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+  padding: 0.95rem 3.2rem;
+  letter-spacing: 0.18em;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 0px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.btn-shop-now:hover {
+  background-color: #9b4de0;
+  color: #FFFFFF;
+  transform: translateY(-2px);
+}
+
+.carousel-dots {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dot.active {
+  background-color: #FFFFFF;
+  border-color: #FFFFFF;
+  width: 24px;
+  border-radius: 4px;
+}

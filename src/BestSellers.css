@@ -1,0 +1,172 @@
+.best-sellers-section {
+  width: 100%;
+  padding: 6rem 2rem 5rem 2rem;
+  background-color: #FFFFFF;
+  border-top-left-radius: 40px;  /* Smoothly rounded upper left corner for the section */
+  border-top-right-radius: 40px; /* Smoothly rounded upper right corner for the section */
+  position: relative;
+  z-index: 2;
+}
+
+.section-title {
+  font-family: Georgia, serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #1F2937;
+  text-align: center;
+  margin-bottom: 3.5rem;
+  letter-spacing: 0.04em;
+}
+
+/* 4-Column Grid layout matching reference */
+.best-sellers-grid {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  padding: 0 1rem;
+}
+
+.product-card {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  background-color: #FFFFFF;
+  padding: 0;
+  border: 1px solid transparent; /* Transparent border by default so it doesn't jump */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  /* Note: individual product cards remain unrounded as per your preference */
+}
+
+/* Very thin black outline appearance on hover matching your video */
+.product-card:hover {
+  border: 1px solid #1F2937;
+}
+
+.product-image-container {
+  position: relative;
+  width: 100%;
+  height: 440px;
+  background-color: #EEEEEE;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-discount-badge {
+  position: absolute;
+  bottom: 18px;
+  left: 18px;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #1F2937;
+  letter-spacing: 0.05em;
+  z-index: 2;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.product-card:hover .product-image {
+  transform: scale(1.03);
+}
+
+/* Color Swatches */
+.product-colors {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 1.4rem 0 0.8rem 0;
+  justify-content: center;
+}
+
+.color-swatch {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid #B0B0B0;
+  display: inline-block;
+}
+
+/* Product Info */
+.product-name {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 400;
+  color: #1F2937;
+  text-align: center;
+  margin-bottom: 0.7rem;
+  letter-spacing: 0.02em;
+}
+
+.product-pricing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.85rem;
+  padding-bottom: 1.5rem;
+}
+
+.original-price {
+  color: #9CA3AF;
+  text-decoration: line-through;
+}
+
+.sale-price {
+  color: #1F2937;
+  font-weight: 700;
+}
+
+/* View All Button Container */
+.best-sellers-btn-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 4rem;
+}
+
+/* Modern sharp squared button matching your screenshot */
+.btn-view-all {
+  background-color: #1F2937;
+  color: #FFFFFF;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 600;
+  padding: 1rem 3.5rem;
+  letter-spacing: 0.15em;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 0px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-view-all:hover {
+  background-color: #9b4de0;
+  transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .best-sellers-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .best-sellers-grid {
+    grid-template-columns: 1fr;
+  }
+  .product-image-container {
+    height: 380px;
+  }
+}
